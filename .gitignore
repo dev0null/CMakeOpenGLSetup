@@ -4,7 +4,6 @@
 **/.vscode/
 **/.cache/
 **/Makefile
-**/*.cmake
 
 # Configs
 .clangd
