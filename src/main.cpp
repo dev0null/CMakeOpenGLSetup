@@ -2,9 +2,12 @@
 #include <GLFW/glfw3.h>
 
 #include "openglErrorReporting.h"
+#include <stb_image.h>
 
+#include <sys/types.h>
 #include <vector>
 #include <print>
+
 
 #define wWIDTH 800
 #define wHEIGHT 600
@@ -39,7 +42,6 @@ const std::vector<GLfloat> triangleVertices = {
     -0.5f, 0.0f,  0.0f, 0.0f, 1.0f,    // center left
     0.0f,  -0.8f,  1.0f, 1.0f, 0.0f    // bottom center   
 };
-
 
 const std::vector<GLuint> indices = {
     0, 1, 2, // first triangle
@@ -88,6 +90,12 @@ int main(){
     }
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+
+    // Load icon
+    GLFWimage images[1];
+    images[0].pixels = stbi_load(RESOURCES_PATH"triangle-64.png", &images[0].width, &images[0].height, 0, 4);
+    glfwSetWindowIcon(window, 1, images);
+    stbi_image_free(images[0].pixels);
 
     //=============== GLAD: load all OpenGL function pointers ===============
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)){
@@ -154,6 +162,9 @@ int main(){
         return -1;
     }
 
+    glDeleteShader(vertexShader);
+    glDeleteShader(fragmentShader);
+
     //========= set up vertex data (and buffer(s)) and configure vertex attributes =========
     GLuint VAO, VBO, EBO;
     glGenVertexArrays(1, &VAO);
@@ -200,10 +211,11 @@ int main(){
     glEnableVertexAttribArray(1);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-
 
     //=============================== Main loop ===============================
+    glUseProgram(shaderProgram);
+    glBindVertexArray(VAO);
+
     while (!glfwWindowShouldClose(window)) {
 
         // Process inputs
@@ -211,10 +223,7 @@ int main(){
 
         // Render
         glClear(GL_COLOR_BUFFER_BIT);
-        glUseProgram(shaderProgram);
-        glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
 
         // Check and call events and swap buffers
         glfwPollEvents();

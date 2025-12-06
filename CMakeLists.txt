@@ -31,7 +31,7 @@ set(GLFW_BUILD_TESTS OFF CACHE BOOL "Compile glfw tests" FORCE)
 
 add_subdirectory(thirdparty/glfw)
 add_subdirectory(thirdparty/glad)
-# add_subdirectory(thirdparty/imgui)
+add_subdirectory(thirdparty/stb_image)
 
 file(GLOB_RECURSE SRC_FILES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 add_executable("${CMAKE_PROJECT_NAME}")
@@ -48,6 +48,7 @@ target_include_directories("${CMAKE_PROJECT_NAME}" PUBLIC "${CMAKE_CURRENT_SOURC
 target_link_libraries("${CMAKE_PROJECT_NAME}" PRIVATE
     glfw
     glad
+    stb_image
     # Debug-only libs
     # $<$<CONFIG:Debug>lib_name>
 )
